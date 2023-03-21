@@ -1,21 +1,26 @@
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import {NavLink, Outlet} from "react-router-dom";
+import {Bars3Icon, BellIcon, UserIcon, XMarkIcon} from '@heroicons/react/24/outline'
+import {Navigate, NavLink, Outlet} from "react-router-dom";
+import {useStateContext} from "../contexts/ContentextProvider.jsx";
+import userNavigation from "tailwindcss/peers";
 
-const user = {
-    name: 'Tom Cook',
-    email: 'tom@example.com',
-    imageUrl:
-        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-}
+// const user = {
+//     name: 'Tom Cook',
+//     email: 'tom@example.com',
+//     imageUrl:
+//         'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+// }
+
+// want to use current user information
+
 const navigation = [
     { name: 'Dashboard', to: '/'},
     { name: 'Surveys', to: '/surveys'},
 ]
-const userNavigation = [
-    { name: 'Sign out', href: '#' },
-]
+// const userNavigation = [
+//     { name: 'Sign out', href: '#' },
+// ]
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -23,9 +28,14 @@ function classNames(...classes) {
 
 export default function DefaultLayout() {
 
+    const { currentUser, userToken } = useStateContext();
      const logout = (event) => {
          event.preventDefault();
          console.log('Logout');
+     }
+
+     if (!userToken) {
+            return <Navigate to='login/' />
      }
 
     return (
@@ -71,7 +81,7 @@ export default function DefaultLayout() {
                                                 <div>
                                                     <Menu.Button className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                                                         <span className="sr-only">Open user menu</span>
-                                                        <img className="h-8 w-8 rounded-full" src={user.imageUrl} alt="" />
+                                                        <UserIcon className="w-9 h-9 bg-black/25 text-white p-2" />
                                                     </Menu.Button>
                                                 </div>
                                                 <Transition
@@ -84,7 +94,6 @@ export default function DefaultLayout() {
                                                     leaveTo="transform opacity-0 scale-95"
                                                 >
                                                     <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                                        {userNavigation.map((item) => (
                                                             <Menu.Item >
                                                                 {({ active }) => (
                                                                     <a
@@ -96,7 +105,6 @@ export default function DefaultLayout() {
                                                                     </a>
                                                                 )}
                                                             </Menu.Item>
-                                                        ))}
                                                     </Menu.Items>
                                                 </Transition>
                                             </Menu>
@@ -134,11 +142,11 @@ export default function DefaultLayout() {
                                 <div className="border-t border-gray-700 pt-4 pb-3">
                                     <div className="flex items-center px-5">
                                         <div className="flex-shrink-0">
-                                            <img className="h-10 w-10 rounded-full" src={user.imageUrl} alt="" />
+                                            <UserIcon className="w-9 h-9 bg-black/25 text-white p-2" />
                                         </div>
                                         <div className="ml-3">
-                                            <div className="text-base font-medium leading-none text-white">{user.name}</div>
-                                            <div className="text-sm font-medium leading-none text-gray-400">{user.email}</div>
+                                            <div className="text-base font-medium leading-none text-white">{currentUser.name}</div>
+                                            <div className="text-sm font-medium leading-none text-gray-400">{currentUser.email}</div>
                                         </div>
 
                                     </div>
